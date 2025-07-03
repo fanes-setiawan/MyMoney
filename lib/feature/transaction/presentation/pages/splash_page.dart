@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:my_money/config/theme.dart';
 import 'package:my_money/core/router/app_router.dart';
+import 'package:my_money/feature/transaction/data/datasources/local/user_local_datasource.dart';
 import 'package:my_money/feature/transaction/presentation/bloc/bloc_splash/splash_bloc.dart';
 import 'package:my_money/feature/transaction/presentation/bloc/bloc_splash/splash_state.dart';
 
@@ -12,11 +13,14 @@ class SplashPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => SplashBloc()..add(SplashStarted()),
+      create:
+          (context) => SplashBloc(UserLocalDatasource())..add(SplashStarted()),
 
       child: BlocListener<SplashBloc, SplashState>(
         listener: (context, state) {
-          if(state is SplashCompleted){
+          if (state is SplashNavigateToHome) {
+            Navigator.pushReplacementNamed(context, AppRouter.tabbar);
+          } else if (state is SplashNavigateToLogin) {
             Navigator.pushReplacementNamed(context, AppRouter.login);
           }
         },
